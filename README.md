@@ -89,5 +89,3 @@ For any inquiries, please reach out to [mohamedsoffar22@outlook.com]
 ---
 
 *Happy Segmenting! 🎉*
-```
-
