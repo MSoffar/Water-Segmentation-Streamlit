@@ -4,6 +4,7 @@ import torch.nn as nn
 import numpy as np
 import rasterio
 import matplotlib.pyplot as plt
+import os
 
 # Define your model architecture (same as the one used during training)
 class DoubleConv(nn.Module):
@@ -62,8 +63,18 @@ class UNet(nn.Module):
 
 # Load the model
 model = UNet(n_channels=12, n_classes=1)  # Assuming the input image has 12 channels
-model.load_state_dict(torch.load('best_model.pth', map_location=torch.device('cpu')))
-model.eval()
+
+# Debugging: Check if the model file exists and load it
+model_path = 'best_model.pth'
+st.write(f"Looking for model file at: {model_path}")
+st.write(f"File exists: {os.path.exists(model_path)}")
+
+try:
+    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+    model.eval()
+    st.write("Model loaded successfully!")
+except Exception as e:
+    st.error(f"Failed to load the model: {e}")
 
 # Function to preprocess the uploaded image
 def preprocess_image(image_path):
@@ -91,13 +102,12 @@ if uploaded_file is not None:
         f.write(uploaded_file.getbuffer())
 
     st.markdown("<h4 style='color: #2980B9;'>Processing your image... please wait! ⏳</h4>", unsafe_allow_html=True)
-    st.spinner("Segmenting... 🔄")
+    with st.spinner("Segmenting... 🔄"):
+        input_tensor = preprocess_image("temp.tif")
 
-    input_tensor = preprocess_image("temp.tif")
-
-    with torch.no_grad():
-        output = model(input_tensor)
-        prediction = (torch.sigmoid(output) > 0.5).float().cpu().numpy()
+        with torch.no_grad():
+            output = model(input_tensor)
+            prediction = (torch.sigmoid(output) > 0.5).float().cpu().numpy()
 
     st.success("Prediction Complete! 🎉")
     st.markdown("<h4 style='color: #27AE60;'>Here is your segmented mask:</h4>", unsafe_allow_html=True)
