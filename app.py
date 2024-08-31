@@ -73,14 +73,9 @@ class UNet(nn.Module):
 model = UNet(n_channels=12, n_classes=1)
 model_path = 'best_model.pth'
 
-# Check if the model file exists
-st.write(f"Looking for model file at: {model_path}")
-st.write(f"File exists: {os.path.exists(model_path)}")
-
 try:
     model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     model.eval()
-    st.write("Model loaded successfully!")
 except Exception as e:
     st.error(f"Failed to load the model: {e}")
 
