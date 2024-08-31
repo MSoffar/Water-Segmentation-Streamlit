@@ -6,6 +6,14 @@ import rasterio
 import matplotlib.pyplot as plt
 import os
 
+# Set page configuration at the very beginning
+st.set_page_config(
+    page_title="Water Segmentation with U-Net 🌊",
+    page_icon="💧",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
+
 # Define your model architecture (same as the one used during training)
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
@@ -61,11 +69,11 @@ class UNet(nn.Module):
             bypass = bypass[:, :, crop_size:-crop_size, crop_size:-crop_size]
         return torch.cat([upsampled, bypass], dim=1)
 
-# Load the model
-model = UNet(n_channels=12, n_classes=1)  # Assuming the input image has 12 channels
-
-# Debugging: Check if the model file exists and load it
+# Initialize and load the model
+model = UNet(n_channels=12, n_classes=1)
 model_path = 'best_model.pth'
+
+# Check if the model file exists
 st.write(f"Looking for model file at: {model_path}")
 st.write(f"File exists: {os.path.exists(model_path)}")
 
@@ -84,13 +92,6 @@ def preprocess_image(image_path):
     return image
 
 # Streamlit app with enhanced UI
-st.set_page_config(
-    page_title="Water Segmentation with U-Net 🌊",
-    page_icon="💧",
-    layout="centered",
-    initial_sidebar_state="expanded",
-)
-
 st.markdown("<h1 style='text-align: center; color: #4A90E2;'>Water Segmentation with U-Net 🌊</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center; color: #8E44AD;'>Upload your TIFF image to see the magic! ✨</h3>", unsafe_allow_html=True)
 
