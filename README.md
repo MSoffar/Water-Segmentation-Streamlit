@@ -1,9 +1,6 @@
-Here's a sample `README.md` file for your project:
-
-```markdown
 # Water Segmentation with U-Net 🌊
 
-![Project Banner](https://your-image-link.com/banner.png)
+![Project Banner](banner.png)
 
 ## Overview
 
@@ -18,7 +15,7 @@ This project demonstrates water body segmentation from satellite images using a 
 
 ## Demo
 
-![Demo GIF](https://your-image-link.com/demo.gif)
+![Demo Photo](demo.jpg)
 
 ## Installation
 
@@ -35,8 +32,8 @@ This project demonstrates water body segmentation from satellite images using a 
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/water-segmentation-unet.git
-   cd water-segmentation-unet
+   git clone https://github.com/MSoffar/Water-Segmentation-UNet-Streamlit.git
+   cd Water-Segmentation-UNet-Streamli
    ```
 
 2. **Create a virtual environment** (optional but recommended):
@@ -65,29 +62,6 @@ This project demonstrates water body segmentation from satellite images using a 
 - **Upload a TIFF image**: The app supports images with 12 channels. Simply drag and drop or select the file from your system.
 - **View Results**: The app will display the original image and the predicted segmentation mask side by side.
 
-## Example
-
-### Input Image (Channel 1)
-
-![Input Image](https://your-image-link.com/input.png)
-
-### Predicted Segmentation Mask
-
-![Segmentation Mask](https://your-image-link.com/output.png)
-
-## File Structure
-
-```bash
-.
-├── app.py                  # Main Streamlit application
-├── model.py                # U-Net model architecture
-├── best_model.pth          # Pre-trained model weights
-├── requirements.txt        # List of dependencies
-├── README.md               # Project documentation
-└── .streamlit
-    └── config.toml         # Streamlit theme configuration
-```
-
 ## Customization
 
 - **Theme**: The theme settings for the Streamlit app can be customized in the `.streamlit/config.toml` file.
@@ -103,10 +77,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/my-new-feature`)
 5. Create a new Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgements
 
 - This project was inspired by [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/abs/1505.04597).
@@ -114,16 +84,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-For any inquiries, please reach out to [your-email@example.com](mailto:your-email@example.com).
+For any inquiries, please reach out to [mohamedsoffar22@outlook.com]
 
 ---
 
 *Happy Segmenting! 🎉*
 ```
 
-### Notes:
-- Replace the placeholder URLs (like `https://your-image-link.com/banner.png`) with actual links to your images.
-- Adjust the installation steps and file structure according to your specific project setup.
-- Include any additional sections relevant to your project (e.g., FAQs, known issues, etc.).
-
-This README provides an overview of your project, installation instructions, and usage details, making it easy for others to understand and use your code.
