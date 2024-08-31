@@ -4,6 +4,7 @@ import torch.nn as nn
 import numpy as np
 import rasterio
 import matplotlib.pyplot as plt
+from PIL import Image
 import os
 
 # Set page configuration at the very beginning
@@ -70,7 +71,7 @@ class UNet(nn.Module):
         return torch.cat([upsampled, bypass], dim=1)
 
 # Initialize and load the model
-model = UNet(n_channels=12, n_classes=1)
+model = UNet(n_channels=12, n_classes=1)  # Default to 12 channels for TIFF
 model_path = 'best_model.pth'
 
 try:
@@ -80,26 +81,40 @@ except Exception as e:
     st.error(f"Failed to load the model: {e}")
 
 # Function to preprocess the uploaded image
-def preprocess_image(image_path):
-    with rasterio.open(image_path) as src:
-        image = src.read().astype(np.float32)  # Read the image as a NumPy array
+def preprocess_image(image_path, channels):
+    if channels == 12:
+        with rasterio.open(image_path) as src:
+            image = src.read().astype(np.float32)  # Read the image as a NumPy array
+    else:
+        image = Image.open(image_path).convert('RGB')  # Convert to RGB (3 channels)
+        image = np.array(image).astype(np.float32)
+        image = np.transpose(image, (2, 0, 1))  # Rearrange dimensions to (C, H, W)
+    
     image = torch.from_numpy(image).unsqueeze(0)  # Add batch dimension
     return image
 
 # Streamlit app with enhanced UI
 st.markdown("<h1 style='text-align: center; color: #4A90E2;'>Water Segmentation with U-Net 🌊</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center; color: #8E44AD;'>Upload your TIFF image to see the magic! ✨</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: #8E44AD;'>Upload your image to see the magic! ✨</h3>", unsafe_allow_html=True)
 
-uploaded_file = st.file_uploader("Upload a TIFF image... 📂", type=["tif"])
+uploaded_file = st.file_uploader("Upload an image (TIFF for 12 channels, JPG/PNG for 3 channels)... 📂", type=["tif", "jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
+    # Determine the number of channels based on file type
+    file_type = uploaded_file.name.split('.')[-1].lower()
+    channels = 12 if file_type == 'tif' else 3
+
+    # Update model to handle 3 channels if necessary
+    if channels == 3:
+        model = UNet(n_channels=3, n_classes=1)
+
     # Save the uploaded file temporarily
-    with open("temp.tif", "wb") as f:
+    with open("temp." + file_type, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
     st.markdown("<h4 style='color: #2980B9;'>Processing your image... please wait! ⏳</h4>", unsafe_allow_html=True)
     with st.spinner("Segmenting... 🔄"):
-        input_tensor = preprocess_image("temp.tif")
+        input_tensor = preprocess_image("temp." + file_type, channels)
 
         with torch.no_grad():
             output = model(input_tensor)
@@ -128,10 +143,10 @@ if uploaded_file is not None:
 # Sidebar for additional information
 st.sidebar.markdown("### About the App 💡")
 st.sidebar.write("This app uses a U-Net model to segment water bodies in satellite images. "
-                 "Simply upload a TIFF image, and the model will predict the water regions. "
+                 "Simply upload an image, and the model will predict the water regions. "
                  "It's an intuitive tool for environmental analysis, urban planning, and more!")
 
 st.sidebar.markdown("### Tips for Best Results 📝")
-st.sidebar.write("1. Ensure your TIFF image has 12 channels.\n"
+st.sidebar.write("1. Use TIFF images for 12 channels and JPG/PNG for 3 channels.\n"
                  "2. Use clear, high-resolution images for more accurate segmentation.\n"
                  "3. Explore different channels in the original image to understand the data better.")
