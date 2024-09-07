@@ -71,7 +71,7 @@ class UNet(nn.Module):
 
 # Initialize and load the model
 model = UNet(n_channels=12, n_classes=1)
-model_path = 'best_model.pth'
+model_path = 'model.pth'
 
 try:
     model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
